@@ -1,0 +1,40 @@
+        <nav id="mainNav">
+            <ul>
+                <li class="element-search">
+                    <form action="/search" id="navSearch">
+                        <figure type="submit">
+                            <i class="fa fa-search"></i>
+                        </figure>
+                        <input class="searchInput searchElement" type="text" id="searchQuery" placeholder="Search Shifter" name="q" autocomplete="off" spellcheck="false">                                <select name="searchOpt" id="searchOpt">
+                            <option value="person">Friends</option>
+                            <option value="store">Work</option>
+                        </select>
+                    </form>
+                </li>
+                <li class="element-shift">
+                    <a href="#" id="shifter" title="Shift your shift, shifter">
+                        <i class="fa fa-plus-square"></i> <span>Shifter</span>
+                    </a>
+                </li>
+                <li class="element-user dropControl dropStyle">
+                    <figure id="userNavPhoto">
+                        <a href="profile" title="Profile">
+                            <img src="../images/default_user.svg" alt="User profile photo">
+                        </a>
+                    </figure>
+                    <div class="userMenu">
+                        <div class="userItem">
+                            <a href="#" title="Edit Profile" id="start_edit_button">
+                                <i class="fa fa-paint-brush"></i> <span>Edit Profile</span>
+                            </a>
+                        </div>
+                        <div class="userItem">
+                            <a href="#" title="Log out" id="logout_button">
+                                <i class="fa fa-times"></i> <span>Log out</span>
+                            </a></div>
+                    </div>
+                </li>
+                <li class="element-messages"><a href="messages" id="message" title="Messages"><i class="fa fa-comments"></i> <span>Messages</span></a></li>
+                <li class="element-notifications notifElement"><a href="#" id="notification" class="attention" title="Notifications"><i class="fa fa-bell"></i> <span>Notifications</span></a></li>
+            </ul>
+        </nav>

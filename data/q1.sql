@@ -1,0 +1,1 @@
+SELECT $1::int AS number, 33 AS truck, 55;

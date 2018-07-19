@@ -1,0 +1,91 @@
+        <div id="shifterModal" class="modalBackground fadeIn"><!-- Phase 1 only: shown/hidden with js -->
+            <div class="modalWrap">
+                <div class="modalMain scaleIn">
+                    <!-- <span class="closeThisX">×</span> -->
+                    <h1>Find Someone to Cover Your Shift</h1>
+
+                    <form action="/api/shift/new" method="post" id="shiftForm">
+                        <!-- <h2>Streamlined Question View</h2> -->
+
+                        <!-- Recall: The for attribute of the <label> tag should be equal to the id attribute of the related element to bind them together, unless theres explicit nesting. -->
+
+                        <div class="modalSubAligner">
+                            <!-- <div class="optionItem">Location</div> -->
+                            <label for="shiftPlace">
+                                <span class="optionItem">Location</span> 
+                                <!-- Results from db query of users places: -->
+                                <!-- better UX to sort by most commonly used. -->
+                                <select name="shiftPlace" id="shiftPlace" required>
+                                    <!-- '-' uses unescaped html characters -->
+                                    <%- workplaces %>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="modalSubAligner">
+                            <label for="shiftPosition">
+                                <span class="optionItem">Position</span> 
+                                <!-- type="date" is not supported in Internet Explorer 10 and earlier versions. -->
+                                <select name="shiftPosition" id="shiftPosition" required>
+                                    <!-- '-' uses unescaped html characters -->
+                                    <%- shiftpositions %>
+                                </select>
+                            </label>
+                        </div>
+                        
+                        <div class="modalSubAligner">
+                            <label for="shiftStartDate">
+                                <span class="optionItem">Start</span> 
+                                <!-- type="date" is not supported in Internet Explorer 10 and earlier versions. -->
+                                <input id="shiftStartDate" type="date" name="shiftStartDate" placeholder="YYYY-MM-DD" required>
+                            </label>
+
+                            <label for="shiftStartTime">
+                                <!-- <span class="optionItem">Time</span>  -->
+                                <!-- type="time" is not supported in Firefox, or Internet Explorer 10 and earlier versions. -->
+                                <input id="shiftStartTime" type="time" name="shiftStartTime" placeholder="HH:MM A/PM" required>
+                            </label>
+                        </div>
+                        
+                        <div class="modalSubAligner">
+                            <label for="shiftEndDate">
+                                <span class="optionItem">End</span> 
+                                <!-- type="date" is not supported in Internet Explorer 10 and earlier versions. -->
+                                <input id="shiftEndDate" type="date" name="shiftEndDate" placeholder="YYYY-MM-DD" required>
+                            </label>
+
+                            <label for="shiftEndTime">
+                                <!-- <span class="optionItem">Time</span>  -->
+                                <!-- type="time" is not supported in Firefox, or Internet Explorer 10 and earlier versions. -->
+                                <input id="shiftEndTime" type="time" name="shiftEndTime" placeholder="HH:MM A/PM" required>
+                            </label>
+                        </div>
+                        
+                        <div class="modalSubAligner">
+                            <label for="shiftDescription">
+                                <span class="optionItem display-table-cell">Description [Optional]</span> 
+                                <!-- type="date" is not supported in Internet Explorer 10 and earlier versions. -->
+                                <textarea id="shiftDescription" name="shiftDescription" placeholder="Enter text here..."></textarea>
+                            </label>
+                        </div>
+
+                        <div class="modalSubAligner">
+                            <label for="shiftIncentive">
+                                <span class="optionItem">Incentive [Optional]</span> 
+                                <!-- type="date" is not supported in Internet Explorer 10 and earlier versions. -->
+                                <input id="shiftIncentive" type="number" name="shiftIncentive" placeholder="$5">
+                            </label>
+                        </div>
+
+                        <div class="modalSubAligner">
+                            <span id="shifterErrorMessage"><%- shiftErrors %></span>
+                        </div>
+                                            
+                        <ul id="shiftFormActions">
+                            <li><button id="shiftCancel" type="button" class="buttonStyle">Cancel</button></li>
+                            <li><input id="shiftCreate" type="submit" value="Create (link d.n.e.)" class="buttonStyle"></li>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+        </div>

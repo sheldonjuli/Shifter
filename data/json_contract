@@ -1,0 +1,1051 @@
+Endpoints are made in the style of: https://developer.spotify.com/web-api/endpoint-reference/
+
+// DUMMY CONSTANTS FOR TESTING
+// Say worker/shifter HASH_ID is always: 's1'
+// Say manager HASH_ID is always: 'm1'
+// Say admin HASH_ID is always: 'a1'
+// user does not exist/false: 'f1'
+
+// API will generally return empty result [] if no matches to a valid query, but will return 404 with a suitable (json encoded) error message in the body if the queried resource does not exist.
+
+Unless specified otherwise, the status response codes from the server are: 1 if success, 0 if fail
+
+
+
+=================================================================
+
+TABLE OF CONTENTS. All our endpoints that serve JSON.
+
+=================================================================
+
+
+TODO: add endpoints from readme..
+
+
+
+=================================================================
+Test endpoints from terminal with `curl`
+=================================================================
+
+curl http://localhost:3000/api/user/add/ -i -X POST -H "Content-Type: application/json" -d '{"key":"val"}'
+
+curl http://localhost:3000/api/user/add/ -i -X POST -H "Content-Type: application/json" --data-binary "@/Users/fong/Desktop/CSC309/309A4/curltest.json"
+
+
+
+
+
+=================================================================
+USER endpoints
+=================================================================
+
+
+Note: the client-side AJAX should handle any errors that arise such as:
+-- 404 if not found
+-- 500 if server error
+
+
+
+for POST request of url "/api/user/add/"
+-------------------------------------------------------------------------
+type 'worker' is the only kind that can be added from the signup page.
+only admin can add these user types: manager, admin
+'type' := manager, admin, worker
+'originator' is the <HASH_ID> of the user adding the other user. if it is recognized as admin (dummy data: 'a1' for admin), then they can add anyone. otherwise it is blank when new user signup.
+only admins can add workplaces (this is more for testing purposes. normal use case is leave blank and let them request the process through manager.)
+[note that admin just uses fields: type, username, password, email]
+when click add button on admin.html
+sent to server:
+
+{
+    "type": "manager",
+    "originator": "a1",
+    "email": "test@aol.com",
+    "username": "user123",
+    "password": "<HASH_password>",
+    "firstName": "Tooky",
+    "middleName": "Tee",
+    "lastName": "McTook",
+    "workplaces": [
+        {
+            "name": "The Patio 23", 
+            "address": "43 Glenbarry St.\nToronto, ON, M8H2JT\nCanada"
+        },
+        {
+            "name": "Oneils Pub", 
+            "address": "22 Someother Avenue\nToronto, ON, M6J2TK\nCanada"
+        }
+    ]
+}
+
+
+
+and server reply with
+'status': 1 if success, 0 if fail
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+
+
+
+for GET request of url "/api/user/{UserIdHash}"
+
+-------------------------------------------------------------------------
+e.g.    http://localhost:3000/api/user/e70727
+
+normal user auth token gets this info.
+admin auth token can get more private user info. (Note: server side must check for admin session credentials on each of these endpoints.)
+on profile.html, admin.html
+'rating' is the average rating, with type: float. out of 5.
+'userStatus': 0 if unbanned, 1 if banned
+'workplaces' is a list of companies
+'userId' is the hashed username (uniquely identifies the user.)
+'status': 1 if success, 0 if fail
+'reason' ..  expect whole reason string
+
+{
+    userId: "", // hashed
+    firstName: "Tooky",
+    middleName: "Tee",
+    lastName: "McTook",
+    workplaces: [
+        {
+            name: "The Patio 23", 
+            address: "43 Glenbarry St.\nToronto, ON, M8H2JT\nCanada"
+        },
+        {
+            name: "Oneils Pub", 
+            address: "22 Someother Avenue\nToronto, ON, M6J2TK\nCanada"
+        }
+    ],
+    rating: 4.8,
+    email: "tooky@aol.com",
+    userStatus: 1,
+    coworkers: [
+        {
+            workname: "",    <== added bc can have different works
+            firstName: "",
+            middleName: "",
+            lastName: "",
+            userId: "",
+            avgRate: 4.1,
+            shiftsTaken: 21
+        },
+        ...
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+
+
+
+
+
+for POST (update) request of url "/api/user/{UserIdHash}"
+-------------------------------------------------------------------------
+curl -i -X POST http://localhost:3000/api/user/s1 -H "Content-Type: application/json" --data-binary "@/Users/fong/Desktop/CSC309/309A4/curltest.json"
+when click update button on admin.html
+when user change their own info,
+'originator' is the <HASH_ID> of the user adding the other user. if it is recognized as admin (dummy data: 'a1' for admin), then they change anyone's info. otherwise it is the same as 'username'..
+'username' is the <HASH_ID> of the user being added.
+or when admin (superuser) change any user info.
+'userStatus': 1 if unbanned, 0 if banned (only admins can change this)
+send to server:
+
+some people dont send all the values to the server, so what then?
+well we just update what they send :(
+
+{
+    "originator": "a1",
+    "username": "user123",
+    "password": "<HASH_password>",
+    "firstName": "Tooky",
+    "middleName": "Tee",
+    "lastName": "McTook",
+    "email": "test@aol.com",
+    "userStatus": 1
+}
+
+and server reply with
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+'reason' only contains text on failure.
+
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+
+for DELETE request of url "/api/user/{UserIdHash}"
+-------------------------------------------------------------------------
+delete user on admin.html
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+'reason' only contains text on failure.
+server returns:
+
+{
+    status: 1,
+    reason: ''
+}
+
+
+
+
+
+
+
+for POST (update) request of url "/api/user/friend/"
+-------------------------------------------------------------------------
+when click to add friend.
+relation is symmetric, meaning ab == ba.
+'userId' is the <HASH_ID> of the user adding the other friend.
+'friendId' is the <HASH_ID> of the friend being added.
+send to server:
+
+{
+    "userId": "dsf98hsd98fhsdifsd98fu",
+    "friendId": "ds0f989sdfsdufjsd98fuji"
+}
+
+and server reply with
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+'reason' only contains text on failure.
+
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+
+
+
+=================================================================
+Work
+=================================================================
+
+for POST request of url "/api/work/add/"
+-------------------------------------------------------------------------
+when user searches for workplaces, and clicks a button to add it as one of their workplaces on their profile.
+
+{
+    workname: "The Patio 23",
+    userId: "dsfsfhasheduser123sdhfsudfhisdf",
+    position: "cook"
+}
+
+
+server returns:
+
+{
+    status: 1,
+    reason: ''
+}
+
+
+
+
+
+=================================================================
+Events: history/notification
+=================================================================
+
+when the notification is clicked by the user, on the server side an entry is set in a table that the notification has been 'seen' so it is not 'notified' next time.
+
+                                      EVENT
+                                        |
+                                     HISTORY
+                                        |
+                                   NOTIFICATION
+
+We define "Notification" as a typeof "History". a notification is just an alert about new history, which has not been seen by the user. Once the notification is seen, we refer to it as history. Getting history from db is regardless of "seen", but notification is only "unseen" history items.
+
+Further, all parties (actor/actee) of an event see it as history, but only the actee sees the notification.
+
+The db implementation has 'History' table, with an 'new' attribute that is boolean true/false. This also supports 'mark as unread'. We also design the tables to support deletion of a history item for one user, but not for the other user/party, (but we dont implement this feature).
+
+History is just exact "notification" objects with an additional "status" field. [not shown]
+
+Different history/notifications go to different types of users: workers, managers
+
+The URI takes an optional query string to specify an amount. 'past' is the past amount of history items to get. default is 10. max is 50
+
+
+Action/Event types:
+- (post) new shift posted to coworkers
+:= not past start date, in Shift table, but not in Took table.
+==> insert into Shift, Notify, History, EventType, Events
+History: users
+Notification: users (actee/coworkers only, i.e. not actor/shifter)
+[Possible "status": posted, expired]
+
+- (approve) better named 'want'.. notification to manager to allow/deny shift transfer.
+:= for all shifts in Want table.
+==> insert into Want (user), Notify (manager), EventType, Events
+History: users, manager
+Notification: manager
+[Possible "status": approved, rejected]
+
+- (accept) shift transfer accepted by manager.
+:= in Took table.
+==> delete from Want. insert into Took, Notify, History, EventType.
+History: users, manager
+Notification: users
+[Possible "status": approved, done]
+
+- (rejected)
+:= when rejected=true in table Want.
+==> update into Want, insert into Notify, History, EventType, Events
+
+- (expired)
+{cron job.}
+:= shift already posted, start date passed, and none in took.
+==> delete from Want, update EventType (type post->expired).
+
+- (done)
+{cron job.}
+:= shift already posted, when end date passed, and in took.
+==> update EventType (type post->done).
+
+- (feedback) feedback from manager.
+:= in Feedback table. given the existing eventID...
+==> insert into Feedback, Notify, History, EventType.
+History: users, manager
+Notification: users
+[Possible "status": ""]
+
+- (JOB: permit) new user try add workplace.
+:= in Apply table. if accepted ==> delete from Apply, add to Work.
+==> insert into Apply, Notify (manager if exists, else admin????), History (user), EventType, Events
+History: users (actor only), manager
+Notification: manager
+[Possible "status": ""]
+
+- (JOB: employ) add workplace approved/rejected
+:= in Worker table.
+==> insert into Worker, Notify, History, EventType, Events.
+History: user (actor only), manager
+Notification: user (actor only)
+[Possible "status": approved, rejected]
+
+
+
+Notice with all the above, the initiator (actor) of the action is notified, so we need to track the difference between actor vs actee.
+
+some 'type' codes are irrelevant to certain History/Notification items.
+
+
+
+for GET request of url "/api/user/history/{UserIdHash}?past=20"
+-------------------------------------------------------------------------
+http://localhost:3000/api/user/history/s1?past=20
+the history of shift transfers on a user's profile.
+shiftStatus only applies to the "post" types of notifications.
+possible "shiftStatus" := post, approve, accept, employ, feedback, permit done, expired, rejected.
+'workplace' is the uniqe id/name of the workplace
+'events' is a list of history items (same format as notifications) both seen and unseen.
+'status': 1 if success, 0 if fail/error
+'reason': reason for fail/error..
+
+history is generally in the form:
+
+{
+    events: [
+        {
+            <history (basically a notification) body>
+        },
+        {
+            <history (basically a notification) body>
+        },
+        ...
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+
+e.g. for type "post", see its just a notification with the shiftStatus field.
+{
+    events: [
+        {
+            type: "post",
+            content: {
+                workplace: "McDonalds 18882",
+                position: "cook",
+                start: new Date("May 21, 2016 12:00:00"),
+                end: new Date("May 21, 2016 20:30:00"),
+                duration: 30600000,
+                description: "",
+                incentive: 0,
+                poster: { userId: "df7g9h654s56f78ghu",
+                    name: "Guy McMan"
+                }
+            },
+            timestamp: new Date("May 20, 2016 10:21:11"),
+            noId: "sdhf98sdhfjiosdfshduf"
+        },
+        ...
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+for GET request of url "/api/notification/?past=20"
+-------------------------------------------------------------------------
+e.g. http://localhost:3000/api/notification/s1
+this request comes when user is clicking the notification button
+
+notifications are generally in the form:
+
+{
+    events: [
+        {
+            <notification body>
+        },
+        {
+            <notification body>
+        },
+        ...
+    ],
+    status: 1,
+    reason: ''
+}
+
+    
+Notification for shifter/workers (or managers if they are shifters)
+---------------------------------------------------------------
+"noId" is notification id
+"timestamp" is time shift was posted
+"duration" is in milliseconds
+"start", "end", "timestamp" are stringified Date() objects.
+type: post
+
+{
+    events: [
+        {
+            type: "post",
+            content: {
+                workplace: "McDonalds 18882",
+                position: "cook",
+                start: new Date("May 21, 2016 12:00:00"),
+                end: new Date("May 21, 2016 20:30:00"),
+                duration: 30600000,
+                description: "",
+                incentive: 0,
+                poster: { userId: "df7g9h654s56f78ghu",
+                    name: "Guy McMan"
+                }
+            },
+            timestamp: new Date("May 20, 2016 10:21:11"),
+            noId: "sdhf98sdhfjiosdfshduf"
+        },
+        ...
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+
+
+Notify user when their posted shift transfer is accepted by manager i.e. someone covered the shift.
+"timestamp" is time when manager accepted
+type: accept
+
+{
+events: [
+    {
+        type: "accept",
+        content: { 
+            workplace: "The Patio 23",
+            position: "waiter",
+            start: new Date("May 21, 2016 12:00:00"),
+            end: new Date("May 21, 2016 20:30:00"),
+            taker: { userId: "s89fd98sdfhsi",
+                name: "Tooky McTook"
+            },
+            poster: { userId: "df7g9h654s56f78ghu",
+                name: "Guy McMan"
+            },
+            manager: { userId: "asfy89f9sdfsjfsdfjs8d",
+                name: "Manny Manage"
+            },
+        },
+        timestamp: new Date("May 20, 2016 18:22:02"),
+        noId: "sd98hduif987gr3hf98sd7fhuisfjdsf"
+    },
+    ...
+],
+status: 1,
+reason: ''
+}
+
+
+
+
+
+Notify users when there is feedback from manager.
+type: feedback
+
+{
+events: [
+    {
+        type: "feedback",
+        content:{ 
+            workplace: "The Patio 23",
+            position: "waiter",
+            start: new Date("May 21, 2016 12:00:00"),
+            end: new Date("May 21, 2016 20:30:00"),
+            manager: { userId: "asfy89f9sdfsjfsdfjs8d",
+                name: "Manny Manage"
+            },
+            poster: { userId: "df7g9h654s56f78ghu",
+                name: "Guy McMan"
+            },
+            taker: { userId: "s89fd98sdfhsi",
+                name: "Tooky McTook"
+            },
+            comment: "",
+            rating: 5,
+        },
+        timestamp: new Date("May 21, 2016 23:00:00"),
+        noId: "sda89fy89fsdfhsdfsdfh9sduf"
+    },
+    ...
+],
+status: 1,
+reason: ''
+}
+
+
+
+
+
+Notify user when their request to add a workplace is approved by a manager. i.e. the workplace is successfully added for user.
+"timestamp" is the time when the manager accepted the request to add the workplace.
+"poster" is the person who requested the employment status.
+type: employ
+
+{
+events: [
+    {
+        type: "employ",
+        content:{ 
+            workplace: "The Patio 29",
+            manager: { 
+                userId: "asfy89f9sdfsjfsdfjs8d",
+                name: "Manny Manage"
+            },
+            poster: { userId: "df7g9h654s56f78ghu",
+                name: "Guy McMan"
+            },
+        },
+        timestamp: new Date("May 05, 2016 11:53:55"),
+        noId: "90ufjqiw032t89hugefq93t27g8fh9wq"
+    },
+    ...
+],
+status: 1,
+reason: ''
+}
+
+
+
+
+
+Notification for managers only.
+---------------------------------------------------------------
+Notify manager when a worker requests to cover a shift, so they can allow/deny the transfer.
+"timestamp" is time when worker accepted the shift.
+type: approve
+
+{
+events: [
+    {
+        type: "approve",
+        content:{
+            workplace: "The Patio 23",
+            position: "waiter",
+            start: new Date("May 21, 2016 12:00:00"),
+            end: new Date("May 21, 2016 20:30:00"),
+            duration: 30600000,
+            description: "",
+            incentive: 0,
+            manager: { userId: "asfy89f9sdfsjfsdfjs8d",
+                name: "Manny Manage"
+            },
+            poster: { userId: "df7g9h654s56f78ghu",
+                name: "Guy McMan"
+            },
+            taker: { userId: "s89fd98sdfhsi",
+                name: "Tooky McTook"
+            }
+        },
+        timestamp: new Date("May 20, 2016 15:21:11"),
+        noId: "dfshd9f8hsdiufhsdfjksdf987e"
+    },
+    ...
+],
+status: 1,
+reason: ''
+}
+
+
+
+
+
+Notify manager when a new user tries to add a workplace to their places worked.
+Stored in the Apply() table.
+"timestamp" is time the worker requested to add the workplace.
+type: permit
+
+{
+events: [
+    {
+        type: "permit",
+        content: { 
+            workplace: "The Patio 29",
+            poster: {
+                userId: "90fe89ijo938yr7ghudsf9f",
+                name: "Guy McMan"
+            }
+        },
+        timestamp: new Date("May 03, 2016 09:02:10"),
+        noId: "89sydfhu98327fhujqw09382rfuidsf"
+    },
+    ...
+],
+status: 1,
+reason: ''
+}
+
+
+
+
+
+
+
+
+
+=================================================================
+search
+=================================================================
+
+'status': 1 if success, 0 if fail/error
+'reason': reason for fail/error..
+
+.. sends empty list if zero search results
+.. sends status=0 if error, along with reason.
+
+
+
+for GET request of url "/api/search/user/{person name}"
+-------------------------------------------------------------------------
+this request happens every time the user types in user names.
+(we put the "search as you type" feature on hold.)
+{person name} can contain spaces, so it is encode with encodeURI() to use %20 for spaces.
+displays a list of coworkers that match the search by name.
+[UX: the ones they have interacted with should be at the front.]
+'name' is the user's full name, concatenated.
+'userId' is the hashed user id that uniquely defines their info.
+
+
+{
+    results: [
+        {
+            userId: "90fe89ijo938yr7ghudsf9f",
+            name: "Guy Maname McMan",
+            worksAt: ["Disneyland 1313", "McDonalds 18882"]
+        },
+        {
+            userId: "s89fd98sdfhsi",
+            name: "Tooky Teetoo McTook"
+            ,
+            worksAt: ["The Patio 23"]
+        },
+        {
+            userId: "asfy89f9sdfsjfsdfjs8d",
+            name: "Manny Moomoo Manage"
+            ,
+            worksAt: ["The Patio 23", "McDonalds 18882"]
+        }
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+
+for GET request of url "/api/search/work/{work name}"
+-------------------------------------------------------------------------
+this request happens every time the user types in work names.
+{work name} can contain spaces, so it is encode with encodeURI() to use %20 for spaces.
+displays a list of any workplaces. even ones they dont work at.
+[UX: the ones they work at should be at the front.]
+'name' uniquely defines a work bc we append numbers to make them unique.
+
+{
+    results: [
+        {
+            name: "The Patio 23", 
+            address: "43 Glenbarry St.\nToronto, ON, M8H2JT\nCanada",
+            positions: ["cook", "waiter"]
+        },
+        {
+            name: "The Patio 24", 
+            address: "111 Other St.\nToronto, ON, M8H2JT\nCanada",
+            positions: ["cook", "general manager"]
+        }
+    ],
+    status: 1,
+    reason: ''
+}
+
+
+
+
+
+
+=================================================================
+shift
+=================================================================
+
+for POST request of url "/api/shift/new/"
+-------------------------------------------------------------------------
+when a user posts a new shift.
+the client sends the server some json text:
+
+{
+    userId: "",
+    workplace: "",
+    startTime: "",
+    endTime: "",
+    position: "",
+    description: "",
+    incentive: 0 // int
+}
+
+and server reply with
+'status': 1 if success, 0 if fail, 404 if not found (uri path), 500 if server error.
+
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+
+for POST request of url "/api/shift/accept/"
+-------------------------------------------------------------------------
+when user declares intention to want/accept a shift (i.e. covers their coworkers shift). 
+table: Want. (update table History)
+[note that actually getting the shift depends if manager permit/approves..]
+'noId' is the id that uniquely defines all the detail of the shift transfer.
+
+{   
+    userId: "",
+    workplace: "",
+    noId: ""
+}
+
+and server reply with,
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+{
+    status: 1,
+    reason: "" // expect whole reason string 
+}
+
+
+
+
+for POST request of url "/api/shift/permit/"
+-------------------------------------------------------------------------
+when managers accept/decline a shift transfer, after their notification.
+'noId' is the id that uniquely defines all the details of the shift transfer.
+table: Took. (update table Want, History)
+'result' is the manager's input: "accept" or "decline"
+
+{
+    result: "",
+    noId: ""
+}
+
+and server reply with
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+for POST request of url "/api/shift/comment/"
+-------------------------------------------------------------------------
+when managers rate/comment on a shift transfer, afterwards.
+'noId' is the id that uniquely defines all the details of the shift transfer.
+[note: this endpoint should have been called "/api/shift/feedback/"]
+table: Feedback. (update table History)
+'comment' is the managers comment.
+'rating' from 1-5
+
+{
+    comment: "",
+    rating: 5,
+    noId: ""
+}
+
+and server reply with
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+{
+    status: 1,
+    reason: "" // expect whole reason string
+}
+
+
+
+
+
+
+
+=================================================================
+messages        ⛔️ development on hold
+=================================================================
+
+for GET request of url "/api/messages/"
+-------------------------------------------------------------------------
+when rendering people on left side of message page, on load.
+<HASH_ID> is the hashed id of the main user.
+'userId' is the hashed id of one of the users returned.
+
+server returns:
+{recents: [
+    {
+        fullName: "",
+        userId: "",
+        lastMessage: "",
+        lastTimestamp: ""
+    },
+    ...
+]}
+
+
+
+for GET request of url "/api/messages/recent/?oid=<HASH_ID>&amt=20"
+-------------------------------------------------------------------------
+when user clicked on someone to start a chat, the server returns recent messages and times for that pair of people.
+'amt' specifies the max amount of messages to get. the default is 10. the max is 50.
+oid=<HASH_ID> is the hashed id of the user clicked-on to chat with.
+
+server returns:
+{messages: [
+    {
+        timestamp: "",
+        message: ""
+    },
+    ...
+]}
+
+
+
+
+
+=================================================================
+login..signup..logout
+=================================================================
+
+// reason talks about things like: "username", "email", "username", "password", "email", ...
+
+for POST request of url "/api/login/"
+-------------------------------------------------------------------------
+values in post body are encrypted through transmission by SSL in our HTTPS protocol on heroku.
+login sets the client-side token that maintains logged in session status.
+users can enter username or email.
+when pressing login
+
+{
+    username: "",   -- note could be their username or email.
+    password: ""
+}
+
+if success, takes to profile page or admin page
+if fail, server reply with:
+{
+    redirect: '',
+    reason: "user does not exist"
+}
+
+
+
+
+
+for POST request of url "/api/signup/"
+-------------------------------------------------------------------------
+values in post body are encrypted through transmission by SSL in our HTTPS protocol on heroku.
+after signup, email is used to send 2-factor auth code.
+
+{
+    username: "",
+    password: "",
+    email: ""
+}
+
+..if success, takes to profile page.
+and server reply with
+{   
+    redirect: '',
+    reason: "username already exists"
+}
+
+
+
+
+
+
+for GET request of url "/api/logout/"
+-------------------------------------------------------------------------
+note that we can just read the cookie to get the user_id to logout.
+when pressing logout.
+logout invalidates the client-side token that maintains logged in session status.
+'reason' only contains text explanation on failure.
+
+...and server reply with,
+{
+    reason: "user already logged out."
+}
+
+..if success, takes to login page.
+
+
+
+
+
+
+=================================================================
+admin stuff
+=================================================================
+
+for POST request of url "/api/admin/userstatus/?user=<HASH_IP>"
+-------------------------------------------------------------------------
+for the 'ban' function on admin.html
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+table: Ban.
+'reason' only contains text explanation on failure.
+server returns:
+
+{
+    status: 0/1,
+    reason: ''
+}
+
+
+for DELETE request of url "/api/admin/userstatus/?user=<HASH_IP>"
+-------------------------------------------------------------------------
+for the 'unban' function on admin.html
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+table: Ban.
+'reason' only contains text explanation on failure.
+server returns:
+
+{
+    status: 0/1,
+    reason: ''
+}
+
+
+
+
+
+for GET request of url "/api/admin/errors/"
+-------------------------------------------------------------------------
+http://localhost:3000/api/admin/errors/
+error monitoring (404/500/...) on admin.html
+server returns:
+
+{
+    errors: [
+        {
+            timestamp: "2000-12-16 12:21:13",
+            errorstatus: 404,
+            endpoint: "http://localhost:3000/api/admin/nothingHere/",
+            IP: "72.66.29.221",
+        },
+        {
+            timestamp: "2000-12-16 12:21:13",
+            errorstatus: 500,
+            endpoint: "http://localhost:3000/api/login/",
+            IP: "22.66.29.221",
+        },
+        {
+            timestamp: "2000-12-16 12:21:13",
+            errorstatus: 404,
+            endpoint: "http://localhost:3000/nothingHereEndpoint/",
+            IP: "72.66.29.221",
+        }
+    ],
+    status: 0/1,
+    reason: ''
+}
+
+
+
+=================================================================
+Database stuff (on admin page)
+=================================================================
+
+for GET request of url "/api/data/analytics/?interval=6&?location=%2Flogin%2F"
+-------------------------------------------------------------------------
+'location' is any (sub)root of the path you want the stats for. forward slashes `/` are encoded with `%2F`. default is all paths at root '/'.
+'interval' is the amount of past hours (int) of data to use, based on time since present. default is 24. min is 0. max is 720?
+show the total number of users in database on admin.html
+show the total number of queries in database on admin.html
+server returns:
+
+{
+    numRows: 221,
+    numUser: 19,
+    status: 0/1,
+    reason: ''
+}
+
+note for db design: there should be the following attributes in the Queries table:
+Queries(uri, timestamp)
+
+.. where the uri is like "/api/data/analytics/"
+
+
+
+
+
+for DELETE request of url "/api/data/initialize/"
+-------------------------------------------------------------------------
+initialize (repopulate) database with defaults on admin.html
+'status': 1 if success, 0 if fail, 404 if not found, 500 if server error.
+'reason' only contains text explanation on failure.
+server returns:
+
+{
+    status: 0/1,
+    reason: ''
+}
+
+
+
+
+
+
+
+
+
+

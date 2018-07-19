@@ -1,0 +1,19 @@
+{
+"originator": "a1",
+"username": "user123",
+"password": "<HASH_password>",
+"firstName": "Tooky",
+"middleName": "Tee",
+"lastName": "McTook",
+"workplaces": [
+    {
+        "name": "The Patio 23",
+        "address": "43 Glenbarry St.\nToronto, ON, M8H2JT\nCanada"
+    },
+    {
+        "name": "Oneils Pub", 
+        "address": "22 Someother Avenue\nToronto, ON, M6J2TK\nCanada"
+    }
+],
+"email": "test@aol.com"
+}

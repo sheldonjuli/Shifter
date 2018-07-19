@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <% include components/head %>
+
+    <body id="body-admin">
+        <div class="wrapper">
+            <main id="dashboard-main">
+                <h1 id="title-admin">Admin Dashboard</h1>
+				<button id="admin-logout" class="buttonStyle">Log out</button>
+                <!-- Change User Settings -->
+                <!-- changing passwords -->
+                <!-- adding, updating, and deleting users and their information -->
+                <section class="dashboard" id="section-admin-existing-user">
+                    <h3 class="dashitem-header">
+                        <i class="fa fa-wrench"></i>Change User Settings
+                    </h3>
+                    <!-- searches as you type the username -->
+					<form action="" method="get">
+						<label for="adminSelectUser" class="dashitem">
+							<span class="labelText"></span>
+							<input id="adminSelectUser" pattern='[A-Za-z0-9]' name="User Name" placeholder="Enter Username (Encrypted version)" type="text" required>
+							<aside class="dashitem good" id="adminSelect">
+								<span><i class="fa fa-check"></i>Select</span>
+							</aside>
+						</label>
+					</form>
+					<table id="table-userinfo">
+						<tbody>
+							<tr class="table-head">
+								<th>Info Type</th>
+								<th>Value (Double click to edit, once filled.)</th>
+							</tr>
+							<tr>
+								<td id="holder-pwd">Password:</td>
+								<td class="table-value" id="td-admin-pwd"></td>
+							</tr>
+							<tr>
+								<td id="holder-fn">First Name:</td>
+								<td class="table-value" id="td-admin-first-name"></td>
+							</tr>
+							<tr>
+								<td id="holder-mn">Middle Name:</td>
+								<td class="table-value" id="td-admin-middle-name"></td>
+							</tr>
+							<tr id="tr-last-name">
+								<td id="holder-ln">Last Name:</td>
+								<td class="table-value" id="td-admin-last-name"></td>
+							</tr>
+							<tr>
+								<td id="holder-em">Email:</td>
+								<td class="table-value" id="td-admin-email"></td>
+							</tr>
+							<!-- <tr>
+								<td>Average Rating:</td>
+								<td class="table-value" id="td-admin-average-rating"></td>
+							</tr> -->
+							<tr>
+								<td id="holder-us">User Status (0=banned, 1=unbanned):</td>
+								<td class="table-value" id="td-admin-user-status"></td>
+							</tr>							
+						</tbody>
+                	</table>
+                    <aside class="dashitem warn" id="adminUpdate">
+                        <span><i class="fa fa-upload"></i>Update User Info</span>
+                    </aside>
+                    <aside class="dashitem bad" id="adminDelete">
+                        <span><i class="fa fa-remove"></i>Delete User</span>
+                    </aside>                  
+                </section>
+                
+                <section class="dashboard" id="section-admin-new-user">
+
+                    <h3 class="dashitem-header">
+                        <i class="fa fa-plus"></i> Add New User
+                    </h3>
+                
+                    <h4><!-- Add New User --></h4>
+                    <form action="/signup" method="post">
+
+                        <label for="adminNewUser" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminNewUser" pattern='[A-Za-z0-9]+' name="User Name" placeholder="Username" type="text" required>
+                        </label>
+
+                        <label for="adminEmail" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminEmail" name="email" placeholder="Email" type="email" required>
+                        </label>
+
+                        <label for="adminNewUserType" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminNewUserType" name="User Type" placeholder="Type of User (Manager, Admin, Worker)" type="text" required>
+                        </label>
+
+                        <label for="adminPassword" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminPassword" name="Password" placeholder="Password" type="text" required>
+                        </label>
+
+                        <label for="adminPasswordRepeat" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminPasswordRepeat" name="Password" placeholder="Repeat Password" type="text" required>
+                        </label>
+                        
+						<!--
+                        <label for="adminUserFirst" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminUserFirst" name="firstName" placeholder="First Name" type="text" required>
+                        </label>
+                        
+                        <label for="adminUserMiddle" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminUserMiddle" name="middleName" placeholder="Middle Name" type="text" required>
+                        </label>
+                        
+                        <label for="adminUserLast" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminUserLast" name="lastName" placeholder="Last Name" type="text" required>
+                        </label>
+                        
+                        <label for="adminWorkPlace" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminWorkPlace" name="workPlace" placeholder="Work Place" type="text" required>
+                        </label>
+                        
+                        <label for="adminWorkAddress" class="dashitem">
+                            <span class="labelText"></span>
+                            <input id="adminWorkAddress" name="workAddress" placeholder="Work Address" type="text" required>
+                        </label>
+                        -->
+                        
+                    </form>
+                    
+                    <aside class="dashitem good" id="adminAdd">
+                        <span><i class="fa fa-plus"></i>Add User</span>
+                    </aside>
+                
+                </section>
+
+
+                <!-- View Error Logs -->
+                <section class="dashboard" id="section-admin-error">
+                    <h3 class="dashitem-header">
+                        <i class="fa fa-heart"></i>Error Monitoring
+                    </h3>
+                    <label for="adminErrorLog" class="dashitem">
+                        <table id="table-error-log">
+                            <tbody>
+                                <tr id="table-head-error">
+                                    <th>Timestamp</th>
+                                    <th>Errorstatus</th>
+                                    <th>Endpoint</th>
+                                    <th>IP</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </label>
+                    <aside class="dashitem good" id="adminFetchMessage">
+                        <span><i class="fa fa-search"> </i>Fetch Latest Errors</span>
+                    </aside>
+                    <aside class="dashitem good" id="adminClearMessage">
+                        <span><i class="fa fa-trash"> </i>Clear Table</span>
+                    </aside>
+
+                </section>
+
+                <!-- Repopulate Database -->
+                <!-- initializing the database (repopulate). -->
+                <!-- restarting it? -->
+                <section class="dashboard">
+                    <h3 class="dashitem-header">
+                        <i class="fa fa-ambulance"></i> Database
+                    </h3>
+                    
+                    <table id="table-database-info">
+						<tbody>
+							<tr class="table-head">
+								<th>Info Type</th>
+								<th>Value</th>
+							</tr>
+							<tr>
+								<td id="holder-nr">Num Row:</td>
+								<td class="table-value" id="td-num-row"></td>
+							</tr>
+							<tr>
+								<td id="holder-nu">Num User:</td>
+								<td class="table-value" id="td-num-user"></td>
+							</tr>
+							<tr>
+								<td id="holder-nq">Num Query:</td>
+								<td class="table-value" id="td-num-query"></td>
+							</tr>
+						</tbody>
+					</table>
+					    <label for="adminDatabaseInfo" class="dashitem">
+                        <aside class="dashitem good" id="adminDatabaseInfo">
+                            <span><i class="fa fa-search"></i>Fetch Latest Info</span>
+                        </aside>
+                    </label>
+                    <label for="adminInitialize" class="dashitem">
+                        <aside class="dashitem bad" id="adminInitialize">
+                            <span><i class="fa fa-warning"></i>Initialize (Repopulate) Database</span>
+                        </aside>
+                    </label>
+                </section>    
+                
+                <!-- Block IP -->
+                <section class="dashboard">
+                    <h3 class="dashitem-header">
+                        <i class="fa fa-shield"></i>Ban User by IP Address
+                    </h3>
+					<form action="" method="post">
+						<label for="adminIp" class="dashitem">
+							<span class="labelText"></span>
+							<input id="adminSelectIp" name="Ip" placeholder="Enter IP" type="text">
+						</label>
+
+						<aside class="dashitem warn" id="adminBanIP">
+							<span><i class="fa fa-ban"></i>Ban IP Address</span>
+						</aside>
+
+						<aside class="dashitem warn" id="adminUnbanIP">
+							<span><i class="fa fa-reply"> </i>Unban IP Address</span>
+						</aside>
+					</form>
+                </section>
+            </main>
+
+        </div> <!-- close wrapper -->
+		
+        <% include components/footer %>
+		<script src="../scripts/script-admin.js"></script>
+    </body>
+</html>

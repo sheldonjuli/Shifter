@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <% include components/head %>
+    
+    <body id="body-login">
+        
+        <!-- nav -->
+
+        <div class="wrapper" >
+
+            <main id="main-login">
+
+                <h1 id="login-brand">Shifter</h1>
+
+                <section id="section-wrapper">
+
+                    <ul id="signin-register-tabs">
+                        <li class="li-login-signup active"><a href="#section-login">Sign In</a></li>
+                        <li class="li-login-signup"><a href="#section-signup">Sign Up</a></li>
+                    </ul>
+                    <section class="class-login-page" id="section-login">
+                        <h2>Welcome Back!</h2>
+                        <ul id="third-party-login">
+                            <li><a href="#" id="google-login">Log in with Google (not set up)</a></li>
+                        </ul>
+                        <form id="form-login" action="/login" method="post">
+                            <label class="loginField" id="usernameField">
+                                <span class="label"></span>
+                                <input type="text" id="username" name="username" placeholder="Username or Email" required/>
+                            </label>
+                            <label class="loginField" id="passwordField">
+                                <span class="label"></span>
+                                <input type="password" id="password" name="password" placeholder="Password" required/>
+                            </label>
+                        </form>
+                        <button id="button-login" class="buttonStyle">Sign in</button>
+                    </section>
+                    
+                    <section class="class-login-page" id="section-signup">
+                        <h2>Hello new user!</h2>
+
+                        <form id="form-signup" action="/" method="post">
+							<label class="signupField" id="newUsernameField">
+                                <span class="label"></span>
+                                <input type="text" id="new_username" name="new_username" placeholder="Username" required/>
+                            </label>
+                            <label class="signupField" id="emailField">
+                                <span class="label"></span>
+                                <input type="email" id="new_email" name="new_email" placeholder="Email" required/>
+                            </label>
+							<label class="signupField" id="newPasswordField">
+                                <span class="label"></span>
+                                <input type="password" id="new_password" name="new_password" placeholder="Password" required/>
+                            </label>
+							<label class="signupField" id="reenterPasswordField">
+                                <span class="label"></span>
+                                <input type="password" id="reenter_password" name="reenter_password" placeholder="Repeat Password" required/>
+                            </label>
+                        </form>
+                        <button id="button-signup" class="buttonStyle">Sign Up</button>
+                    </section>
+
+                </section>
+
+            </main>
+
+        </div> <!-- close wrapper -->
+
+        <% include components/footer %>
+		<script src="https://apis.google.com/js/api.js?onload=handleClientLoad"></script>
+    </body>
+</html>

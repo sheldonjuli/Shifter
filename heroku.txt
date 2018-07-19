@@ -1,0 +1,56 @@
+shared account: nigel.harper.f@gmail.com
+public password: csc309app
+
+As a note: it's probably best to make a new branch to add/commit/push/etc to heroku on, since it can confuse the add/commit with your github. and of course you can pull from your master to your other branch to update it.
+
+Create an app on Heroku:
+    heroku create shifter309
+
+https://shifter309.herokuapp.com/ | https://git.heroku.com/shifter309.git
+
+Now deploy your code:
+    git push heroku master
+
+Use a Procfile, a text file in the root directory of your application, to explicitly declare what command should be executed to start your app. The name web is important here. It declares that this process type will be attached to the HTTP routing stack of Heroku, and receive web traffic when deployed. The Procfile in the example app you deployed looks like this:
+    web: node server/server.js
+
+You can check how many dynos are running using the ps command:
+    heroku ps
+
+Turn on/off by changing scale the number of web dynos to zero:
+    heroku ps:scale web=0
+
+Now start your application locally using the heroku local command, which was installed as part of the Toolbelt. Just like Heroku, heroku local examines the Procfile to determine what to run. ...then open http://localhost:5000 with your web browser. You should see your app running locally.
+    heroku local web
+
+Adding changes to heroku server:
+Almost every deploy to Heroku follows this same pattern. First, add the modified files to the local git repository:
+    git add .
+
+Now commit the changes to the repository:
+    git commit -m "Demo"
+
+Now deploy, just as you did previously (like git push):
+    git push heroku master
+
+Finally, check that everything is working. Open your app site it in a web tab:
+    heroku open
+
+to get logging output:
+    heroku logs
+
+note that heroku needs instead of binding to a hardcoded port (3000), you should bind to an environment variable with a default:
+
+    http.listen(process.env.PORT || 3000, function(){
+        // ...
+    });
+
+Session affinity is enabled to allow heroku routing layer to consistently route requests for a client session to the same dyno. With session affinity, if a known dyno holds your session then you’ll be routed to it. This is useful for our `client-sessions` that require some level of extra state within the application code.
+
+    heroku labs:enable http-session-affinity
+
+
+
+TODO: provision the PostgreSQL database
+
+https://devcenter.heroku.com/articles/getting-started-with-nodejs#provision-a-database

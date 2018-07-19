@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <% include components/head %>
+    
+    <body id="body-profile">
+        
+        <% include components/nav %>
+
+        <div class="wrapper" id="mainApp">
+        	<main id="main-profile">
+				<section class="searchElement" id="searchResult">
+					<ul id="list-search-result">
+					</ul>
+				</section>
+                <section class="notifElement" id="notifBlock">
+					<ul id="list-notifications">
+					</ul>
+				</section>
+				<section class="sections-profile" id="section-personal-info">
+					<table id="table-personal-info">
+						<tbody>
+							<tr class="table-head">
+								<th class="sectionHeading">Personal Info</th>
+							</tr>
+							<tr>
+								<td class="displayNone">First Name:</td>
+                                <td class="table-value profile_shows" id="main-first-name"></td><td class="table-value profile_editers"><input placeholder="First Name" class="profile_editers" id="profile-edit-first-name"></td>
+							</tr>
+							<tr>
+								<td class="displayNone">Middle Name:</td>
+                                <td class="table-value profile_shows" id="main-middle-name"></td><td class="table-value profile_editers"><input placeholder="Middle Name" class="profile_editers" id="profile-edit-middle-name"></td>
+							</tr>
+							<tr>
+								<td class="displayNone">Last Name:</td>
+                                <td class="table-value profile_shows" id="main-last-name"></td><td class="table-value profile_editers"><input placeholder="Last Name" class="profile_editers" id="profile-edit-last-name"></td>
+							</tr>
+                            <tr>
+                                <td>Rating:</td>
+                                <td class="table-value" id="main-average-rating"></td>
+                            </tr>   
+
+							<tr class="profile_editers">
+                                <td class="profile_editers">Email:</td><td class="table-value profile_editers"><input placeholder="" class="profile_editers" id="profile-edit-email"></td>
+							</tr>
+                            
+							<tr id="main-workplace-info">
+							</tr>
+											
+						</tbody>
+                	</table>
+				</section>
+				<section class="sections-profile" id="section-current-history">
+					<ul id="list-current-history">
+                        <li class="li-current-history sectionHeading">History</li>
+					</ul>
+                    <section id="section-history">
+                        <ul class="list-status" id="list-history-status">
+                        </ul>
+                    </section>
+				</section>
+				<section class="sections-profile" id="section-friends">           
+                    <select name="searchFriendsOpt" id="sortFriendsOpt">
+                        <option value="do_nothing">👇 Select a Sort..</option>
+                        <option value="name">👉 by Name</option>
+                        <option value="rate">👉 by Rating</option>
+                        <option value="jobs">👉 by Shifts Covered</option>
+                    </select>
+					<ul id="list-friends">No friends/coworkers yet :(</ul>
+				</section>
+			</main>
+            <section class="sections-profile" id="sec_app_position">
+                <h2>Please select position to apply to</h2>
+                <h2>For store: <span id='applyToStoreName'></span></h2>
+                <select name="searchFriendsOpt" id="position_choice"></select>
+                <button id="apply_cancel_button" class="buttonStyle">Cancel</button>
+                <button id="apply_choice_button" class="buttonStyle">Apply!</button>
+            </section>
+
+        </div> <!-- close wrapper -->
+
+        <% include components/shifter %>
+		
+		<% include components/footer %>
+
+        <!--<script src="../scripts/script-profile.js"></script>-->
+        <script src="../scripts/script-main.js"></script>
+	</body>
+</html>

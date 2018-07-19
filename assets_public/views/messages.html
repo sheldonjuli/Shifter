@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <% include components/head %>
+    
+    <body>
+        
+        <% include components/nav %>
+
+        <div class="wrapper">
+
+            <main id="mainMessage">
+                
+                <section id="messageRecipients" class="messageBlock">
+                    <article class="ithMessageRecipient">
+                        <a href="#">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Stephen Cook">
+                            </figure>
+                            <aside>
+                                <h5>Stephen Cook</h5>
+                                <span>Stephen:</span><span>np 👍</span>
+                            </aside>
+                        </a>
+                    </article>
+                    <article class="ithMessageRecipient">
+                        <a href="#">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Azadeh Farzan">
+                            </figure>
+                            <aside>
+                                <h5>Azadeh Farzan</h5>
+                                <span>You:</span><span>That's very helpful</span>
+                            </aside>
+                        </a>
+                    </article>
+                    <article class="ithMessageRecipient">
+                        <a href="#">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Jennifer Campbell">
+                            </figure>
+                            <aside>
+                                <h5>Jennifer Campbell</h5>
+                                <span>Jennifer:</span><span>It looks like many...</span>
+                            </aside>
+                        </a>
+                    </article>
+                    <article class="ithMessageRecipient">
+                        <a href="#">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="David Liu">
+                            </figure>
+                            <aside>
+                                <h5>David Liu</h5>
+                                <span>David:</span><span>Indeed</span>
+                            </aside>
+                        </a>
+                    </article>
+                    <article class="ithMessageRecipient">
+                        <a href="#">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Diane Horton">
+                            </figure>
+                            <aside>
+                                <h5>Diane Horton</h5>
+                                <span>Diane:</span><span>See you soon.</span>
+                            </aside>
+                        </a>
+                    </article>
+                </section>
+                
+                <section id="messageArea" class="messageBlock">
+                    <section id="messageContainer" class="messageBlock">
+                        <div class="messageTimestamp">29 MAY 17:50</div>
+                        <article class="youMessage msg">
+                            <span>Hello</span>
+                        </article>
+                        <article class="youMessage msg">
+                            <span>Do you remember if Maria is managing that day?</span>
+                        </article>
+                        <article class="youMessage msg">
+                            <span>I mean on Thursday</span>
+                        </article>
+                        <div class="messageTimestamp">29 MAY 18:01</div>
+                        <article class="otherMessage msg">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Stephen Cook">
+                            </figure>
+                            <span>Ya</span>
+                        </article>
+                        <article class="otherMessage msg">
+                            <span>She does Th-Sun</span>
+                        </article>
+                        <div class="messageTimestamp">29 MAY 18:03</div>
+                        <article class="youMessage msg">
+                            <span>Ok thanks 😀</span>
+                        </article>
+                        <div class="messageTimestamp">30 MAY 21:40</div>
+                        <article class="otherMessage msg">
+                            <figure>
+                                <img src="../images/default_user.svg" alt="Stephen Cook">
+                            </figure>
+                            <span>np 👍</span>
+                        </article>
+                    </section>
+                    <section id="messageWriter">
+                        <form id="" action="/newmessage" method="post">
+                            <input id="messageInput" type="text" placeholder="Type a message..." required/>
+                        </form>
+                    </section>
+                </section>
+            </main>
+
+        </div> <!-- close wrapper -->
+
+        <% include components/shifter %>
+
+        <% include components/footer %>
+        <script src="../scripts/script-main.js"></script>
+
+    </body>
+</html>
