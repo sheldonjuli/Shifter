@@ -1,6 +1,6 @@
 # Shifter
 
-NOTICE: This project was done with Nigel Fong and Kyle Tam as the final project of CSC309. Code is no longer maintained and is for display only. The document below is taken directly from the old report and is not being updated.
+NOTICE: This project was done with Nigel Fong and Kyle Tam as the final project of CSC309. Code is no longer maintained and is for display only. The document below is taken directly from the old report and is not being updated. This repository is for display only. The commits do not reflect the actual working process.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
