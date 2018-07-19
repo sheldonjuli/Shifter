@@ -1,7 +1,8 @@
 # Shifter
 
-This project was done with Nigel Fong and Kyle Tam as the final project of CSC309. Code is no longer maintained and is for display only. The document below is taken directly from the old report and is not updated.
+NOTICE: This project was done with Nigel Fong and Kyle Tam as the final project of CSC309. Code is no longer maintained and is for display only. The document below is taken directly from the old report and is not being updated.
 
+--------------------------------------------------------------------------------------------------------------------------------
 
 # ✨Shifter✨
 CSC309 Assignment 4: The Sharing Economy
